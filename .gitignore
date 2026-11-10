@@ -1,0 +1,17 @@
+# Ignorar node_modules en cualquier subcarpeta
+**/node_modules/
+
+# Ignorar carpetas de build
+**/dist/
+**/build/
+
+# Variables de entorno
+**/.env
+**/.env.local
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
