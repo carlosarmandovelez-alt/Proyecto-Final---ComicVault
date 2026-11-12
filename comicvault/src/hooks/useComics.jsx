@@ -1,24 +1,14 @@
 // src/hooks/useComics.jsx
 import { useState } from 'react';
-import {
-    collection,
-    query,
-    where,
-    getDocs,
-    addDoc,
-    updateDoc,
-    deleteDoc,
-    doc,
-    serverTimestamp
-} from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { collection, query, where, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; 
+import { db, storage } from '../firebase/config';
 
 export function useComics() {
     const [comics, setComics] = useState([]);
     const [isPending, setIsPending] = useState(false);
     const [error, setError] = useState(null);
 
-    // ✅ Obtener cómics del usuario
     const getUserComics = async (userId) => {
         setIsPending(true);
         setError(null);
@@ -36,17 +26,29 @@ export function useComics() {
         }
     };
 
-    // ✅ Agregar cómic
-    const addComic = async (comic) => {
+    // ✅ NUEVA FUNCIÓN: Sube imagen + Guarda en Firestore
+    const addComic = async (comic, file) => {
         setIsPending(true);
         setError(null);
         try {
-            const ref = await addDoc(collection(db, 'comics'), {
+            let imagenUrl = '';
+
+            // 1. Si hay archivo, lo subimos a Storage
+            if (file) {
+                const storageRef = ref(storage, `comics/${Date.now()}_${file.name}`);
+                await uploadBytes(storageRef, file);
+                imagenUrl = await getDownloadURL(storageRef);
+            }
+
+            // 2. Guardamos en Firestore con la URL
+            const docRef = await addDoc(collection(db, 'comics'), {
                 ...comic,
+                imagenUrl: imagenUrl, // ← Se guarda la URL
                 createdAt: serverTimestamp()
             });
+
             setIsPending(false);
-            return ref;
+            return docRef;
         } catch (err) {
             setError(err.message);
             setIsPending(false);
@@ -54,46 +56,25 @@ export function useComics() {
         }
     };
 
-    // ✅ Actualizar cómic (calificación, reseña)
     const updateComic = async (id, data) => {
-        setIsPending(true);
-        setError(null);
         try {
-            await updateDoc(doc(db, 'comics', id), {
-                ...data,
-                updatedAt: serverTimestamp()
-            });
-            setIsPending(false);
+            await updateDoc(doc(db, 'comics', id), { ...data, updatedAt: serverTimestamp() });
             return true;
         } catch (err) {
             setError(err.message);
-            setIsPending(false);
             return false;
         }
     };
 
-    // ✅ Eliminar cómic
     const removeComic = async (id) => {
-        setIsPending(true);
-        setError(null);
         try {
             await deleteDoc(doc(db, 'comics', id));
-            setIsPending(false);
             return true;
         } catch (err) {
             setError(err.message);
-            setIsPending(false);
             return false;
         }
     };
 
-    return {
-        comics,
-        isPending,
-        error,
-        getUserComics,
-        addComic,
-        updateComic,
-        removeComic
-    };
+    return { comics, isPending, error, getUserComics, addComic, updateComic, removeComic };
 }

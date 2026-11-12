@@ -1,0 +1,19 @@
+// src/componentes/index/StarRating.module.scss
+.stars {
+    display: flex;
+    gap: 4px;
+}
+
+.star {
+    font-size: 1.5rem;
+    color: #444;
+    transition: color 0.2s;
+
+    &.active {
+        color: #F5C518; /* Amarillo IMDb */
+    }
+
+    &:hover {
+        transform: scale(1.2);
+    }
+}

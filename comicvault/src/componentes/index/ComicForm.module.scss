@@ -1,0 +1,64 @@
+// src/componentes/index/ComicForm.module.scss
+.form {
+    background: #1F1F1F;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    h3 {
+        color: #F5C518;
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+    }
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    label {
+        color: #AAAAAA;
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+
+    input {
+        padding: 12px;
+        background: #2C2C2C;
+        border: 1px solid #444;
+        border-radius: 8px;
+        color: white;
+        font-size: 1rem;
+
+        &::placeholder {
+            color: #777;
+        }
+
+        &:focus {
+            outline: none;
+            border-color: #F5C518;
+        }
+    }
+}
+
+.btnAdd {
+    padding: 14px;
+    background: #F5C518;
+    color: #121212;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+        background: #FFD84D;
+        transform: translateY(-2px);
+    }
+}

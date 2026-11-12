@@ -1,0 +1,45 @@
+// src/componentes/shared/Menu.module.scss
+.menu {
+    background: #1F1F1F;
+    border-bottom: 2px solid #F5C518;
+    padding: 16px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.brand a {
+    color: #F5C518;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.user {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    span {
+        color: #AAAAAA;
+        font-size: 0.9rem;
+    }
+}
+
+.btnLogout {
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid #EF4444;
+    color: #EF4444;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+        background: #EF4444;
+        color: white;
+    }
+}
