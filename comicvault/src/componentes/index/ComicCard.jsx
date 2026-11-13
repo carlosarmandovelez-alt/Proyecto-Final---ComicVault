@@ -2,11 +2,10 @@
 import StarRating from './StarRating';
 import styles from './ComicCard.module.scss';
 
-function ComicCard({ comic, onDelete, onRate }) {
+function ComicCard({ comic, onDelete, onRate, onRead, onWishlist }) {
     return (
         <div className={styles.card}>
-            
-            {/* ✅ Mitad izquierda: Imagen */}
+            {/* ... (Imagen e Info) ... */}
             <div className={styles.imageContainer}>
                 {comic.imagenUrl ? (
                     <img src={comic.imagenUrl} alt={comic.titulo} className={styles.coverImage} />
@@ -15,7 +14,6 @@ function ComicCard({ comic, onDelete, onRate }) {
                 )}
             </div>
 
-            {/* ✅ Mitad derecha: Información */}
             <div className={styles.infoContainer}>
                 <div className={styles.header}>
                     <h3>{comic.titulo}</h3>
@@ -31,11 +29,16 @@ function ComicCard({ comic, onDelete, onRate }) {
                     <StarRating rating={comic.calificacion || 0} onChange={(newRating) => onRate(comic.id, newRating)} />
                 </div>
 
-                {comic.reseña && (
-                    <p className={styles.review}>"{comic.reseña}"</p>
-                )}
+                {/* ✅ BOTONES DE ACCIÓN */}
+                <div className={styles.actions}>
+                    <button className={styles.btnRead} onClick={() => onRead(comic)}>
+                        📖 Leído
+                    </button>
+                    <button className={styles.btnWishlist} onClick={() => onWishlist(comic)}>
+                        ⭐ Deseos
+                    </button>
+                </div>
             </div>
-
         </div>
     );
 }

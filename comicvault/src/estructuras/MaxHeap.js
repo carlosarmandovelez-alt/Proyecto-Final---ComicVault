@@ -1,65 +1,73 @@
+// src/estructuras/MaxHeap.js
 class MaxHeap {
     constructor() {
-        this.items = [];
+        this.heap = [];
     }
 
-    insertar(item) {
-        this.items.push(item);
-        this.subir(this.items.length - 1);
+    // ✅ Insertar un cómic basado en su calificación
+    insert(comic) {
+        this.heap.push(comic);
+        this.percolateUp();
     }
 
-    extraerMax() {
-        if (this.items.length === 0) return null;
-        const max = this.items[0];
-        const ultimo = this.items.pop();
-        if (this.items.length > 0) {
-            this.items[0] = ultimo;
-            this.bajar(0);
-        }
+    // ✅ Extraer el cómic con mejor calificación
+    extractMax() {
+        if (this.heap.length === 0) return null;
+        if (this.heap.length === 1) return this.heap.pop();
+
+        const max = this.heap[0];
+        this.heap[0] = this.heap.pop();
+        this.percolateDown(0);
         return max;
     }
 
-    subir(i) {
-        while (i > 0) {
-            const padre = Math.floor((i - 1) / 2);
-            if (this.items[i].puntuacion <= this.items[padre].puntuacion) break;
-            [this.items[i], this.items[padre]] = [this.items[padre], this.items[i]];
-            i = padre;
+    percolateUp() {
+        let index = this.heap.length - 1;
+        while (index > 0) {
+            const parentIndex = Math.floor((index - 1) / 2);
+            // Si el hijo tiene más calificación que el padre, se intercambian
+            if (this.heap[index].calificacion > this.heap[parentIndex].calificacion) {
+                this.swap(index, parentIndex);
+                index = parentIndex;
+            } else {
+                break;
+            }
         }
     }
 
-    bajar(i) {
-        const n = this.items.length;
-        while (true) {
-            let mayor = i;
-            const izq = 2 * i + 1;
-            const der = 2 * i + 2;
+    percolateDown(index) {
+        const length = this.heap.length;
+        let largest = index;
+        const left = 2 * index + 1;
+        const right = 2 * index + 2;
 
-            if (izq < n && this.items[izq].puntuacion > this.items[mayor].puntuacion) mayor = izq;
-            if (der < n && this.items[der].puntuacion > this.items[mayor].puntuacion) mayor = der;
-            if (mayor === i) break;
+        if (left < length && this.heap[left].calificacion > this.heap[largest].calificacion) {
+            largest = left;
+        }
+        if (right < length && this.heap[right].calificacion > this.heap[largest].calificacion) {
+            largest = right;
+        }
 
-            [this.items[i], this.items[mayor]] = [this.items[mayor], this.items[i]];
-            i = mayor;
+        if (largest !== index) {
+            this.swap(index, largest);
+            this.percolateDown(largest);
         }
     }
 
-    getTop(n = 10) {
+    swap(i, j) {
+        [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
+    }
+
+    // ✅ Obtener los K mejores sin destruir el Heap original
+    getTopK(k) {
         const copia = new MaxHeap();
-        copia.items = [...this.items];
-        const top = [];
-        for (let i = 0; i < n && !copia.isEmpty(); i++) {
-            top.push(copia.extraerMax());
+        copia.heap = [...this.heap];
+        
+        const topK = [];
+        for (let i = 0; i < k && copia.heap.length > 0; i++) {
+            topK.push(copia.extractMax());
         }
-        return top;
-    }
-
-    isEmpty() {
-        return this.items.length === 0;
-    }
-
-    size() {
-        return this.items.length;
+        return topK;
     }
 }
 

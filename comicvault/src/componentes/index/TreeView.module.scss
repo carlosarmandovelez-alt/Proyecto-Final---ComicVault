@@ -1,0 +1,72 @@
+// src/componentes/index/TreeView.module.scss
+.treeContainer {
+    background: #1F1F1F;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.treeRoot {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.treeNode {
+    list-style: none;
+    margin: 4px 0;
+}
+
+.nodeHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: #AAAAAA;
+    transition: background 0.2s;
+
+    &.clickable {
+        cursor: pointer;
+        color: white;
+
+        &:hover {
+            background: #2C2C2C;
+        }
+    }
+}
+
+.arrow {
+    font-size: 0.7rem;
+    color: #F5C518;
+    transition: transform 0.2s;
+    width: 12px;
+
+    &.open {
+        transform: rotate(90deg);
+    }
+}
+
+.icon {
+    font-size: 1rem;
+}
+
+.label {
+    font-size: 0.95rem;
+}
+
+.count {
+    font-size: 0.8rem;
+    color: #777;
+    margin-left: auto;
+}
+
+.childrenList {
+    list-style: none;
+    padding-left: 24px; // Indentación para los hijos
+    margin: 0;
+    border-left: 1px solid #333;
+    margin-left: 16px;
+}

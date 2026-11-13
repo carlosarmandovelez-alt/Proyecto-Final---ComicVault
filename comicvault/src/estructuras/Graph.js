@@ -1,51 +1,39 @@
+// src/estructuras/Graph.js
 class Graph {
     constructor() {
-        this.nodes = [];
-        this.adjList = {};
-        this.nodeData = {};
+        this.adjList = {}; // Lista de adyacencia
+        this.nodesData = {}; // Datos de cada nodo (título, etc.)
     }
 
+    // ✅ Agregar un nodo
     addNode(id, data = {}) {
-        if (!this.searchNode(id)) {
-            this.nodes.push(id);
+        if (!this.adjList[id]) {
             this.adjList[id] = [];
-            this.nodeData[id] = data;
+            this.nodesData[id] = data;
         }
     }
 
-    addEdge(nodo1, nodo2) {
-        this.adjList[nodo1].push(nodo2);
-        this.adjList[nodo2].push(nodo1);
+    // ✅ Agregar una arista (conexión bidireccional)
+    addEdge(node1, node2) {
+        if (this.adjList[node1] && this.adjList[node2]) {
+            // Evitar duplicados
+            if (!this.adjList[node1].includes(node2)) {
+                this.adjList[node1].push(node2);
+            }
+            if (!this.adjList[node2].includes(node1)) {
+                this.adjList[node2].push(node1);
+            }
+        }
     }
 
-    searchNode(id) {
-        return this.nodes.find(n => n === id);
-    }
-
-    getAdjacency(id) {
+    // ✅ Obtener los vecinos (conexiones) de un nodo
+    getNeighbors(id) {
         return this.adjList[id] || [];
     }
 
-    toD3Format() {
-        const nodes = this.nodes.map(id => ({
-            id: id,
-            ...this.nodeData[id]
-        }));
-
-        const links = [];
-        const visited = new Set();
-
-        this.nodes.forEach(id => {
-            this.adjList[id].forEach(vecino => {
-                const edgeKey = [id, vecino].sort().join('-');
-                if (!visited.has(edgeKey)) {
-                    visited.add(edgeKey);
-                    links.push({ source: id, target: vecino });
-                }
-            });
-        });
-
-        return { nodes, links };
+    // ✅ Ver todos los datos de los nodos
+    getNodesData() {
+        return this.nodesData;
     }
 }
 

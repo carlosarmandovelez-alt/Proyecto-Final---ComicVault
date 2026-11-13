@@ -1,6 +1,8 @@
+// src/estructuras/NaryTree.js
 class Nodo {
-    constructor(data) {
-        this.data = data;      // { nombre, tipo, imagen, ... }
+    constructor(valor, tipo) {
+        this.valor = valor;
+        this.tipo = tipo; // 'editorial', 'autor' o 'comic'
         this.hijos = [];
     }
 
@@ -11,34 +13,32 @@ class Nodo {
 
 class NaryTree {
     constructor() {
-        this.raiz = null;
+        this.raiz = new Nodo('Mi Colección', 'raiz');
     }
 
-    setRaiz(nodo) {
-        this.raiz = nodo;
-    }
+    // ✅ Este es el método que falta o está mal guardado
+    construirDesdeComics(comics) {
+        this.raiz = new Nodo('Mi Colección', 'raiz');
 
-    dfs(nodo = this.raiz, resultado = []) {
-        if (!nodo) return resultado;
-        resultado.push(nodo);
-        for (const hijo of nodo.hijos) {
-            this.dfs(hijo, resultado);
-        }
-        return resultado;
-    }
-
-    bfs() {
-        if (!this.raiz) return [];
-        const resultado = [];
-        const cola = [this.raiz];
-        while (cola.length > 0) {
-            const actual = cola.shift();
-            resultado.push(actual);
-            for (const hijo of actual.hijos) {
-                cola.push(hijo);
+        comics.forEach(comic => {
+            // 1. Buscar o crear la editorial
+            let editorialNodo = this.raiz.hijos.find(h => h.valor === comic.editorial && h.tipo === 'editorial');
+            if (!editorialNodo) {
+                editorialNodo = new Nodo(comic.editorial, 'editorial');
+                this.raiz.agregarHijo(editorialNodo);
             }
-        }
-        return resultado;
+
+            // 2. Buscar o crear el autor dentro de la editorial
+            let autorNodo = editorialNodo.hijos.find(h => h.valor === comic.autor && h.tipo === 'autor');
+            if (!autorNodo) {
+                autorNodo = new Nodo(comic.autor, 'autor');
+                editorialNodo.agregarHijo(autorNodo);
+            }
+
+            // 3. Agregar el cómic al autor
+            const comicNodo = new Nodo(comic, 'comic');
+            autorNodo.agregarHijo(comicNodo);
+        });
     }
 }
 

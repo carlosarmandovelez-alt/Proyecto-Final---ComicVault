@@ -1,0 +1,92 @@
+// src/componentes/index/GraphView.module.scss
+.graphContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #2C2C2C;
+    padding: 12px 16px;
+    border-radius: 8px;
+
+    label { color: #AAAAAA; font-size: 0.9rem; }
+    select {
+        background: #1F1F1F;
+        color: white;
+        border: 1px solid #444;
+        padding: 8px 12px;
+        border-radius: 6px;
+        flex: 1;
+        font-size: 1rem;
+        &:focus { outline: none; border-color: #F5C518; }
+    }
+}
+
+.visualGraph {
+    background: #1A1A1A;
+    border: 1px dashed #444;
+    border-radius: 12px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.centerNode {
+    background: #F5C518;
+    color: #121212;
+    padding: 16px 24px;
+    border-radius: 50px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 0 20px rgba(245, 197, 24, 0.3);
+    position: relative;
+    
+    .icon { font-size: 1.5rem; }
+}
+
+.connectionsGrid {
+    width: 100%;
+    text-align: center;
+    
+    h4 { color: #AAAAAA; margin-bottom: 16px; font-weight: 500; }
+}
+
+.connectionCards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+}
+
+.connectionCard {
+    background: #2C2C2C;
+    border: 1px solid #F5C518;
+    padding: 12px 16px;
+    border-radius: 8px;
+    min-width: 200px;
+    position: relative;
+
+    /* Línea conectora visual */
+    &::before {
+        content: '';
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        width: 2px;
+        height: 15px;
+        background: #444;
+    }
+}
+
+.connTitle { color: white; font-weight: bold; margin-bottom: 4px; }
+.connDetail { color: #F5C518; font-size: 0.8rem; }
+.noConnections { color: #777; font-style: italic; }
+.empty { color: #777; text-align: center; padding: 20px; }
