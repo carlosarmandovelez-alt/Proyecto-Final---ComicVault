@@ -70,3 +70,24 @@
     border-left: 1px solid #333;
     margin-left: 16px;
 }
+
+// src/componentes/index/TreeView.module.scss
+// ... (estilos anteriores)
+
+// ✅ Estilo para los cómics (links)
+.comicNode {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: #AAAAAA;
+    text-decoration: none;
+    transition: all 0.2s;
+    margin-left: 20px; /* Indentación para que se vea como hijo */
+
+    &:hover {
+        background: #2C2C2C;
+        color: #F5C518;
+    }
+}

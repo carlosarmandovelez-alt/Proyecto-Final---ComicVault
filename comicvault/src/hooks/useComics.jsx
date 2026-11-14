@@ -1,22 +1,22 @@
 // src/hooks/useComics.jsx
 import { useState } from 'react';
 import { collection, query, where, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; 
-import { db, storage } from '../firebase/config';
+import { db } from '../firebase/config';
 
 export function useComics() {
-    const [comics, setComics] = useState([]);
+    const [userComics, setUserComics] = useState([]); // Interacciones del usuario
     const [isPending, setIsPending] = useState(false);
     const [error, setError] = useState(null);
 
+    // ✅ Obtener las interacciones del usuario
     const getUserComics = async (userId) => {
         setIsPending(true);
         setError(null);
         try {
-            const q = query(collection(db, 'comics'), where('userId', '==', userId));
+            const q = query(collection(db, 'user_comics'), where('userId', '==', userId));
             const snapshot = await getDocs(q);
             const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-            setComics(docs);
+            setUserComics(docs);
             setIsPending(false);
             return docs;
         } catch (err) {
@@ -26,55 +26,61 @@ export function useComics() {
         }
     };
 
-    // ✅ NUEVA FUNCIÓN: Sube imagen + Guarda en Firestore
-    const addComic = async (comic, file) => {
+    // ✅ Obtener TODAS las interacciones (para el rating promedio global)
+    const getAllInteractions = async () => {
+        try {
+            const snapshot = await getDocs(collection(db, 'user_comics'));
+            return snapshot.docs.map(d => d.data());
+        } catch (err) {
+            console.error(err);
+            return [];
+        }
+    };
+
+    // ✅ Agregar o actualizar interacción
+    const saveInteraction = async (userId, comicId, data) => {
         setIsPending(true);
         setError(null);
         try {
-            let imagenUrl = '';
+            // Buscar si ya existe
+            const q = query(
+                collection(db, 'user_comics'),
+                where('userId', '==', userId),
+                where('comicId', '==', comicId)
+            );
+            const snapshot = await getDocs(q);
 
-            // 1. Si hay archivo, lo subimos a Storage
-            if (file) {
-                const storageRef = ref(storage, `comics/${Date.now()}_${file.name}`);
-                await uploadBytes(storageRef, file);
-                imagenUrl = await getDownloadURL(storageRef);
+            if (!snapshot.empty) {
+                // Actualizar
+                const docId = snapshot.docs[0].id;
+                await updateDoc(doc(db, 'user_comics', docId), {
+                    ...data,
+                    updatedAt: serverTimestamp()
+                });
+            } else {
+                // Crear
+                await addDoc(collection(db, 'user_comics'), {
+                    userId,
+                    comicId,
+                    ...data,
+                    createdAt: serverTimestamp()
+                });
             }
-
-            // 2. Guardamos en Firestore con la URL
-            const docRef = await addDoc(collection(db, 'comics'), {
-                ...comic,
-                imagenUrl: imagenUrl, // ← Se guarda la URL
-                createdAt: serverTimestamp()
-            });
-
             setIsPending(false);
-            return docRef;
-        } catch (err) {
-            setError(err.message);
-            setIsPending(false);
-            return null;
-        }
-    };
-
-    const updateComic = async (id, data) => {
-        try {
-            await updateDoc(doc(db, 'comics', id), { ...data, updatedAt: serverTimestamp() });
             return true;
         } catch (err) {
             setError(err.message);
+            setIsPending(false);
             return false;
         }
     };
 
-    const removeComic = async (id) => {
-        try {
-            await deleteDoc(doc(db, 'comics', id));
-            return true;
-        } catch (err) {
-            setError(err.message);
-            return false;
-        }
+    return {
+        userComics,
+        isPending,
+        error,
+        getUserComics,
+        getAllInteractions,
+        saveInteraction
     };
-
-    return { comics, isPending, error, getUserComics, addComic, updateComic, removeComic };
 }

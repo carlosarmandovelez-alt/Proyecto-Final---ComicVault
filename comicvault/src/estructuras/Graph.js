@@ -1,11 +1,11 @@
 // src/estructuras/Graph.js
 class Graph {
     constructor() {
-        this.adjList = {}; // Lista de adyacencia
-        this.nodesData = {}; // Datos de cada nodo (título, etc.)
+        // { idNodo: [{ id: idVecino, peso: 10, razon: 'Mismo Autor' }, ...] }
+        this.adjList = {}; 
+        this.nodesData = {};
     }
 
-    // ✅ Agregar un nodo
     addNode(id, data = {}) {
         if (!this.adjList[id]) {
             this.adjList[id] = [];
@@ -13,25 +13,40 @@ class Graph {
         }
     }
 
-    // ✅ Agregar una arista (conexión bidireccional)
-    addEdge(node1, node2) {
+    // ✅ Agregar arista con PESO y RAZÓN
+    addEdge(node1, node2, peso = 1, razon = 'Relacionado') {
         if (this.adjList[node1] && this.adjList[node2]) {
-            // Evitar duplicados
-            if (!this.adjList[node1].includes(node2)) {
-                this.adjList[node1].push(node2);
+            // Actualizar o agregar para node1
+            const existe1 = this.adjList[node1].find(e => e.id === node2);
+            if (existe1) {
+                if (peso > existe1.peso) {
+                    existe1.peso = peso;
+                    existe1.razon = razon;
+                }
+            } else {
+                this.adjList[node1].push({ id: node2, peso, razon });
             }
-            if (!this.adjList[node2].includes(node1)) {
-                this.adjList[node2].push(node1);
+
+            // Actualizar o agregar para node2 (bidireccional)
+            const existe2 = this.adjList[node2].find(e => e.id === node1);
+            if (existe2) {
+                if (peso > existe2.peso) {
+                    existe2.peso = peso;
+                    existe2.razon = razon;
+                }
+            } else {
+                this.adjList[node2].push({ id: node1, peso, razon });
             }
         }
     }
 
-    // ✅ Obtener los vecinos (conexiones) de un nodo
-    getNeighbors(id) {
-        return this.adjList[id] || [];
+    // ✅ Obtener vecinos ORDENADOS por peso (mayor a menor)
+    getNeighborsSorted(id) {
+        const vecinos = this.adjList[id] || [];
+        // Retorna una copia ordenada para no mutar el original
+        return [...vecinos].sort((a, b) => b.peso - a.peso);
     }
 
-    // ✅ Ver todos los datos de los nodos
     getNodesData() {
         return this.nodesData;
     }

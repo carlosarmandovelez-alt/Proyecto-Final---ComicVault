@@ -1,13 +1,14 @@
 // src/componentes/index/TreeView.jsx
 import { useState } from 'react';
+import { Link } from 'react-router-dom'; // ✅ Importar Link
 import styles from './TreeView.module.scss';
 
 function TreeNode({ nodo }) {
     const [abierto, setAbierto] = useState(false);
 
     const tieneHijos = nodo.hijos && nodo.hijos.length > 0;
+    const esComic = nodo.tipo === 'comic'; // ✅ Detectar si es cómic
 
-    // Iconos según el tipo
     const getIcon = () => {
         if (nodo.tipo === 'raiz') return '📁';
         if (nodo.tipo === 'editorial') return '🏢';
@@ -15,12 +16,24 @@ function TreeNode({ nodo }) {
         return '📘';
     };
 
-    // Texto a mostrar (si es cómic, mostramos el título)
     const getLabel = () => {
         if (nodo.tipo === 'comic') return nodo.valor.titulo;
         return nodo.valor;
     };
 
+    // ✅ Si es cómic, renderizamos un Link
+    if (esComic) {
+        return (
+            <li className={styles.treeNode}>
+                <Link to={`/comic/${nodo.valor.id}`} className={styles.comicNode}>
+                    <span className={styles.icon}>📘</span>
+                    <span className={styles.label}>{getLabel()}</span>
+                </Link>
+            </li>
+        );
+    }
+
+    // ✅ Si es carpeta/editorial/autor, renderizamos el acordeón
     return (
         <li className={styles.treeNode}>
             <div 

@@ -8,6 +8,9 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 16px;
+    position: sticky; /* Para que se quede arriba al hacer scroll */
+    top: 0;
+    z-index: 100;
 }
 
 .brand a {
@@ -17,29 +20,62 @@
     text-decoration: none;
 }
 
+.navLinks {
+    display: flex;
+    gap: 8px;
+}
+
+.link {
+    color: #AAAAAA;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s;
+
+    &:hover {
+        color: white;
+        background: #2C2C2C;
+    }
+
+    &.active {
+        color: #F5C518;
+        background: rgba(245, 197, 24, 0.1);
+    }
+}
+
 .user {
     display: flex;
     align-items: center;
     gap: 16px;
+}
 
-    span {
-        color: #AAAAAA;
-        font-size: 0.9rem;
-    }
+.userName {
+    color: #AAAAAA;
+    font-size: 0.9rem;
+}
+
+.btnLogout, .btnLogin {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s;
 }
 
 .btnLogout {
-    padding: 8px 16px;
     background: transparent;
     border: 1px solid #EF4444;
     color: #EF4444;
-    border-radius: 6px;
-    font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
 
-    &:hover {
-        background: #EF4444;
-        color: white;
-    }
+    &:hover { background: #EF4444; color: white; }
+}
+
+.btnLogin {
+    background: #F5C518;
+    color: #121212;
+
+    &:hover { background: #FFD84D; }
 }
