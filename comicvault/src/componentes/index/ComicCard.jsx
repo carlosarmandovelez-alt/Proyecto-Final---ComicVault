@@ -1,11 +1,9 @@
-// src/componentes/index/ComicCard.jsx
 import StarRating from './StarRating';
 import styles from './ComicCard.module.scss';
 
-function ComicCard({ comic, onDelete, onRate, onRead, onWishlist }) {
+function ComicCard({ comic, onDelete, onRate, onRead, onWishlist, enColeccion = false }) {
     return (
         <div className={styles.card}>
-            {/* ... (Imagen e Info) ... */}
             <div className={styles.imageContainer}>
                 {comic.imagenUrl ? (
                     <img src={comic.imagenUrl} alt={comic.titulo} className={styles.coverImage} />
@@ -17,7 +15,10 @@ function ComicCard({ comic, onDelete, onRate, onRead, onWishlist }) {
             <div className={styles.infoContainer}>
                 <div className={styles.header}>
                     <h3>{comic.titulo}</h3>
-                    <button className={styles.btnDelete} onClick={() => onDelete(comic.id)}>✕</button>
+                    {/* Mostramos el botón de eliminar solo si no está en la colección (o si es admin, pero para este caso lo ocultamos) */}
+                    {!enColeccion && onDelete && (
+                        <button className={styles.btnDelete} onClick={() => onDelete(comic.id)}>✕</button>
+                    )}
                 </div>
 
                 <div className={styles.details}>
@@ -26,18 +27,32 @@ function ComicCard({ comic, onDelete, onRate, onRead, onWishlist }) {
                 </div>
 
                 <div className={styles.rating}>
-                    <StarRating rating={comic.calificacion || 0} onChange={(newRating) => onRate(comic.id, newRating)} />
+                    <StarRating 
+                        rating={comic.calificacion || 0} 
+                        onChange={(newRating) => onRate && onRate(comic.id, newRating)} 
+                        readonly={enColeccion} // Si está en colección, no se puede cambiar desde aquí
+                    />
                 </div>
 
-                {/* ✅ BOTONES DE ACCIÓN */}
-                <div className={styles.actions}>
-                    <button className={styles.btnRead} onClick={() => onRead(comic)}>
-                        📖 Leído
-                    </button>
-                    <button className={styles.btnWishlist} onClick={() => onWishlist(comic)}>
-                        ⭐ Deseos
-                    </button>
-                </div>
+                {/* Lógica condicional: Botones o Reseña */}
+                {!enColeccion ? (
+                    <div className={styles.actions}>
+                        <button className={styles.btnRead} onClick={() => onRead && onRead(comic)}>
+                            📖 Leído
+                        </button>
+                        <button className={styles.btnWishlist} onClick={() => onWishlist && onWishlist(comic)}>
+                            ⭐ Deseos
+                        </button>
+                    </div>
+                ) : (
+                    <div className={styles.readOnlyInfo}>
+                        {comic.resena ? (
+                            <p className={styles.shortReview}>"{comic.resena}"</p>
+                        ) : (
+                            <span className={styles.readBadge}>✅ Leído</span>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );

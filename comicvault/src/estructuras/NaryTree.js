@@ -1,8 +1,7 @@
-// src/estructuras/NaryTree.js
 class Nodo {
     constructor(valor, tipo) {
         this.valor = valor;
-        this.tipo = tipo; // 'editorial', 'autor' o 'comic'
+        this.tipo = tipo; 
         this.hijos = [];
     }
 
@@ -16,7 +15,7 @@ class NaryTree {
         this.raiz = new Nodo('Mi Colección', 'raiz');
     }
 
-    // ✅ Este es el método que falta o está mal guardado
+    
     construirDesdeComics(comics) {
         this.raiz = new Nodo('Mi Colección', 'raiz');
 

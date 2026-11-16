@@ -1,0 +1,39 @@
+
+// Fondos (Negro y Gris)
+$bg-primary: #08090A;       // Negro puro 
+$bg-card: #131518;          // Gris muy oscuro (tarjetas)
+$bg-input: #1C1F24;         // Gris oscuro (inputs)
+$bg-hover: #1C1F24;         // Hover states
+
+// Bordes
+$border: #2C3036;
+$border-light: #3F444D;
+
+// Textos
+$text-primary: #E5E7EB;     // Blanco grisáceo
+$text-secondary: #9CA3AF;   // Gris claro
+$text-muted: #6B7280;       // Gris medio
+$text-on-primary: #FFFFFF;  // Texto blanco sobre botones azules
+
+// Acentos
+$primary: #3B82F6;          // Azul Zafiro 
+$primary-hover: #60A5FA;    // Azul claro 
+$secondary: #6B7280;        // Gris plata 
+
+// Estados
+$danger: #DC2626;
+$success: #059669;
+
+// Espaciados
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+
+// Bordes redondeados
+$radius-sm: 6px;
+$radius-md: 10px;
+$radius-lg: 16px;
+
+// Sombras
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.6);
+$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.8);

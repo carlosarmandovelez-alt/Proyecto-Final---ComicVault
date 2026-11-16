@@ -1,16 +1,15 @@
-// src/estructuras/MaxHeap.js
 class MaxHeap {
     constructor() {
         this.heap = [];
     }
 
-    // ✅ Insertar un cómic basado en su calificación
+    // Insertar un cómic basado en su calificación
     insert(comic) {
         this.heap.push(comic);
         this.percolateUp();
     }
 
-    // ✅ Extraer el cómic con mejor calificación
+    // Extraer el cómic con mejor calificación
     extractMax() {
         if (this.heap.length === 0) return null;
         if (this.heap.length === 1) return this.heap.pop();
@@ -58,7 +57,7 @@ class MaxHeap {
         [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
     }
 
-    // ✅ Obtener los K mejores sin destruir el Heap original
+    // Obtener los K mejores sin destruir el Heap original
     getTopK(k) {
         const copia = new MaxHeap();
         copia.heap = [...this.heap];

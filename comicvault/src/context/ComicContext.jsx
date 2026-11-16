@@ -1,5 +1,4 @@
-// src/context/ComicContext.jsx
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
 import { useComics } from '../hooks/useComics';
 import { catalogoComics } from '../data/catalogoComics';
 import MaxHeap from '../estructuras/MaxHeap';
@@ -7,49 +6,75 @@ import Stack from '../estructuras/Stack';
 import Queue from '../estructuras/Queue';
 import { NaryTree } from '../estructuras/NaryTree';
 import Graph from '../estructuras/Graph';
+import { AuthContext } from './AuthContext';
 
 export const ComicContext = createContext();
 
 export function ComicProvider({ children }) {
+    const { user } = useContext(AuthContext);
     const comicsState = useComics();
     
     const [topComics, setTopComics] = useState([]);
-    const [historial, setHistorial] = useState([]);
-    const [deseos, setDeseos] = useState([]);
     const [arbol, setArbol] = useState(null);
     const [grafo, setGrafo] = useState(null);
     
     const [stack] = useState(new Stack());
     const [queue] = useState(new Queue());
+    
+    const [historial, setHistorial] = useState([]);
+    const [deseos, setDeseos] = useState([]);
 
+    // Cargar datos del usuario al iniciar
+    useEffect(() => {
+        if (user) {
+            comicsState.getUserComics(user.uid);
+        } else {
+            setHistorial([]);
+            setDeseos([]);
+            stack.items = [];
+            queue.items = [];
+        }
+    }, [user]);
+
+    //  Reconstruir Pila y Cola cuando se cargan las listas
+    useEffect(() => {
+        if (comicsState.userLists) {
+            stack.items = [];
+            queue.items = [];
+
+            comicsState.userLists.deseos.forEach(comic => queue.enqueue(comic));
+            setDeseos(queue.getAll());
+
+            comicsState.userLists.historial.forEach(comic => stack.push(comic));
+            setHistorial(stack.getAll());
+        }
+    }, [comicsState.userLists]);
+
+    // Calcular Heap, Árbol y Grafo
     useEffect(() => {
         if (catalogoComics.length > 0) {
-            // 1. Combinar catálogo con las calificaciones del usuario
+            // 1. Top 5 (Max-Heap)
             const comicsConCalificacion = catalogoComics.map(comic => {
                 const interaccion = comicsState.userComics.find(uc => uc.comicId === comic.id);
                 return {
                     ...comic,
-                    calificacion: interaccion?.calificacion || 0,
-                    resena: interaccion?.resena || '',
-                    status: interaccion?.status || null
+                    calificacion: interaccion?.calificacion || 0
                 };
             });
 
-            // 2. Top 5 (Max-Heap)
             const heap = new MaxHeap();
             comicsConCalificacion.forEach(comic => {
                 if (comic.calificacion > 0) heap.insert(comic);
             });
             setTopComics(heap.getTopK(5));
 
-            // 3. Árbol N-ario (Catálogo Global)
+            // 2. Árbol N-ario
             const nuevoArbol = new NaryTree();
             nuevoArbol.construirDesdeComics(catalogoComics);
             setArbol(nuevoArbol);
 
-            // 4. Grafo Ponderado (Conexiones con Prioridad y Razón)
+            // 3. Grafo Ponderado
             const nuevoGrafo = new Graph();
-            
             catalogoComics.forEach(comic => {
                 nuevoGrafo.addNode(comic.id, { 
                     titulo: comic.titulo, 
@@ -62,74 +87,113 @@ export function ComicProvider({ children }) {
                 for (let j = i + 1; j < catalogoComics.length; j++) {
                     const c1 = catalogoComics[i];
                     const c2 = catalogoComics[j];
-                    
                     let peso = 0;
                     let razones = [];
 
-                    // 🔥 Prioridad 1: Mismo Autor (Peso 10)
-                    if (c1.autor === c2.autor) {
-                        peso += 10;
-                        razones.push('Mismo Autor');
-                    }
-
-                    // 🔥 Prioridad 2: Misma Franquicia/Palabra en Título (Peso 5)
+                    if (c1.autor === c2.autor) { peso += 10; razones.push('Mismo Autor'); }
+                    
                     const palabras1 = c1.titulo.toLowerCase().split(/[\s:]+/);
                     const palabras2 = c2.titulo.toLowerCase().split(/[\s:]+/);
-                    const palabrasComunes = palabras1.filter(p => p.length > 3 && palabras2.includes(p));
+                    if (palabras1.some(p => p.length > 3 && palabras2.includes(p))) { 
+                        peso += 5; 
+                        razones.push('Misma Franquicia'); 
+                    }
                     
-                    if (palabrasComunes.length > 0) {
-                        peso += 5;
-                        razones.push('Misma Franquicia');
-                    }
+                    if (c1.editorial === c2.editorial) { peso += 2; razones.push('Misma Editorial'); }
 
-                    // 🔥 Prioridad 3: Misma Editorial (Peso 2)
-                    if (c1.editorial === c2.editorial) {
-                        peso += 2;
-                        razones.push('Misma Editorial');
-                    }
-
-                    // Si hay alguna relación, agregamos la arista con la razón
-                    if (peso > 0) {
-                        nuevoGrafo.addEdge(c1.id, c2.id, peso, razones.join(' + '));
-                    }
+                    if (peso > 0) nuevoGrafo.addEdge(c1.id, c2.id, peso, razones.join(' + '));
                 }
             }
             setGrafo(nuevoGrafo);
         }
     }, [comicsState.userComics]);
 
-    // ✅ Pila y Cola
-    const marcarComoLeido = (comic) => {
+    // PILA (Historial) con persistencia
+    const marcarComoLeido = async (comic) => {
+        if (!user) return;
+        if (!stack.isEmpty() && stack.peek().id === comic.id) return;
+
         stack.push(comic);
-        setHistorial(stack.getAll());
+        const nuevoHistorial = stack.getAll();
+        setHistorial(nuevoHistorial);
+
+        // Guardar en listas (Pila)
+        await comicsState.saveUserLists(user.uid, {
+            deseos: deseos,
+            historial: nuevoHistorial
+        });
+
+        // Guardar en user_comics como leído
+        await comicsState.saveReadStatus(user.uid, comic.id, true);
     };
 
-    const deshacerUltimoLeido = () => {
+    const deshacerUltimoLeido = async () => {
+        if (!user) return;
         stack.pop();
-        setHistorial(stack.getAll());
+        const nuevoHistorial = stack.getAll();
+        setHistorial(nuevoHistorial);
+        await comicsState.saveUserLists(user.uid, { 
+            deseos, 
+            historial: nuevoHistorial 
+        });
     };
 
-    const agregarADeseos = (comic) => {
+    // COLA (Deseos) con persistencia y feedback
+    const agregarADeseos = async (comic) => {
+        if (!user) return;
+
+        const yaExiste = queue.getAll().some(c => c.id === comic.id);
+        if (yaExiste) {
+            alert('Este cómic ya está en tu lista de deseos.');
+            return false;
+        }
+
         queue.enqueue(comic);
-        setDeseos(queue.getAll());
+        const nuevosDeseos = queue.getAll();
+        setDeseos(nuevosDeseos);
+
+        await comicsState.saveUserLists(user.uid, {
+            deseos: nuevosDeseos,
+            historial: historial
+        });
+        return true;
     };
 
-    const leerSiguienteDeseo = () => {
+    const leerSiguienteDeseo = async () => {
+        if (!user) return;
         const siguiente = queue.dequeue();
         if (siguiente) {
-            setDeseos(queue.getAll());
+            const nuevosDeseos = queue.getAll();
+            setDeseos(nuevosDeseos);
+            
             stack.push(siguiente);
-            setHistorial(stack.getAll());
+            const nuevoHistorial = stack.getAll();
+            setHistorial(nuevoHistorial);
+
+            await comicsState.saveUserLists(user.uid, {
+                deseos: nuevosDeseos,
+                historial: nuevoHistorial
+            });
+
+            //marcar como leído
+            await comicsState.saveReadStatus(user.uid, siguiente.id, true);
         }
     };
 
-    const eliminarDeDeseos = (id) => {
+    const eliminarDeDeseos = async (id) => {
+        if (!user) return;
         const nuevaQueue = new Queue();
         queue.getAll().forEach(c => {
             if (c.id !== id) nuevaQueue.enqueue(c);
         });
         queue.items = nuevaQueue.items;
-        setDeseos(queue.getAll());
+        const nuevosDeseos = queue.getAll();
+        setDeseos(nuevosDeseos);
+
+        await comicsState.saveUserLists(user.uid, {
+            deseos: nuevosDeseos,
+            historial: historial
+        });
     };
 
     return (

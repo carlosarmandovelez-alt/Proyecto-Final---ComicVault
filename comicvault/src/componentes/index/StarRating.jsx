@@ -1,4 +1,3 @@
-// src/componentes/index/StarRating.jsx
 import styles from './StarRating.module.scss';
 
 function StarRating({ rating, onChange, readonly = false }) {

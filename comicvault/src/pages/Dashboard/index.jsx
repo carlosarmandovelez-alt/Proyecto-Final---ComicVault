@@ -2,7 +2,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { ComicContext } from '../../context/ComicContext';
-import Menu from '../../componentes/shared/Menu';
 import Tabs from '../../componentes/shared/Tabs';
 import ComicCard from '../../componentes/index/ComicCard';
 import styles from './index.module.scss';
@@ -29,35 +28,85 @@ function Dashboard() {
         }
     }, [user]);
 
-    // Cómics que el usuario ha leído/calificado
+    if (!user) {
+        return <div style={{ padding: '40px', color: 'white' }}>Cargando perfil...</div>;
+    }
+
+    // ✅ Cómics que el usuario ha leído O calificado
     const misComics = catalogoComics
         .map(comic => {
             const interaccion = userComics.find(uc => uc.comicId === comic.id);
-            return interaccion ? { ...comic, ...interaccion } : null;
+            // Incluir si tiene leido: true O calificación > 0
+            if (interaccion && (interaccion.leido || interaccion.calificacion > 0)) {
+                return { ...comic, ...interaccion };
+            }
+            return null;
         })
         .filter(c => c !== null);
 
-    // ===== PESTAÑA 1: MI PERFIL =====
+    // ===== PESTAÑA 1: MI PERFIL (ESTILO LETTERBOXD) =====
     const tabPerfil = (
         <div className={styles.tabContentWrapper}>
+            
+            {/* ✅ TARJETA DE PERFIL */}
+            <div className={styles.profileHeader}>
+                <div className={styles.profileAvatar}>
+                    {user.photoURL ? (
+                        <img src={user.photoURL} alt="Avatar" />
+                    ) : (
+                        <span>{user.displayName?.charAt(0) || user.email?.charAt(0) || '?'}</span>
+                    )}
+                </div>
+                <div className={styles.profileInfo}>
+                    <h2>{user.displayName || 'Usuario Anónimo'}</h2>
+                    <p className={styles.profileEmail}>{user.email}</p>
+                    <div className={styles.profileStats}>
+                        <div className={styles.statItem}>
+                            <span className={styles.statNumber}>{misComics.length}</span>
+                            <span className={styles.statLabel}>Leídos</span>
+                        </div>
+                        <div className={styles.statItem}>
+                            <span className={styles.statNumber}>{deseos.length}</span>
+                            <span className={styles.statLabel}>Deseos</span>
+                        </div>
+                        <div className={styles.statItem}>
+                            <span className={styles.statNumber}>
+                                {topComics.length > 0 ? topComics[0].calificacion : '0'}
+                            </span>
+                            <span className={styles.statLabel}>Mejor Nota</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* ✅ TOP 5 DESTACADO */}
             {topComics && topComics.length > 0 && (
-                <div className={styles.topSection}>
-                    <h2>🏆 Top 5 Personal</h2>
-                    <p className={styles.sectionSubtitle}>Basado en tus calificaciones (Max-Heap)</p>
-                    <div className={styles.topGrid}>
+                <div className={styles.topSectionLetterboxd}>
+                    <div className={styles.sectionHeader}>
+                        <h2>🏆 Mi Top 5</h2>
+                        <p className={styles.sectionSubtitle}>Mis cómics favoritos (Max-Heap)</p>
+                    </div>
+                    <div className={styles.topGridLetterboxd}>
                         {topComics.map((comic, index) => (
-                            <div key={comic.id} className={styles.topCard}>
-                                <span className={styles.rankBadge}>#{index + 1}</span>
-                                <h3>{comic.titulo}</h3>
-                                <p>⭐ {comic.calificacion} / 5</p>
+                            <div key={comic.id} className={styles.topCardLetterboxd}>
+                                <div className={styles.rankNumber}>#{index + 1}</div>
+                                <img src={comic.imagenUrl} alt={comic.titulo} className={styles.topCover} />
+                                <div className={styles.topInfo}>
+                                    <h3>{comic.titulo}</h3>
+                                    <p>{comic.autor}</p>
+                                    <div className={styles.topStars}>
+                                        {'⭐'.repeat(comic.calificacion)}
+                                    </div>
+                                </div>
                             </div>
                         ))}
                     </div>
                 </div>
             )}
 
+            {/* ESTRUCTURAS: COLA Y PILA */}
             <div className={styles.structuresGrid}>
-                {/* Cola */}
+                {/* Lista de Deseos (Cola) */}
                 <div className={styles.queueSection}>
                     <div className={styles.queueHeader}>
                         <div>
@@ -85,7 +134,7 @@ function Dashboard() {
                     )}
                 </div>
 
-                {/* Pila */}
+                {/* Historial (Pila) */}
                 <div className={styles.stackSection}>
                     <div className={styles.stackHeader}>
                         <div>
@@ -130,10 +179,11 @@ function Dashboard() {
                         <ComicCard
                             key={comic.id}
                             comic={comic}
+                            enColeccion={true} // ✅ AQUÍ LE DECIMOS QUE ES DE LA COLECCIÓN
                             onDelete={() => {}}
-                            onRate={() => {}}
-                            onRead={marcarComoLeido}
-                            onWishlist={agregarADeseos}
+                            onRate={() => {}} // Deshabilitamos el cambio de nota desde aquí
+                            onRead={() => {}}
+                            onWishlist={() => {}}
                         />
                     ))}
                 </div>
@@ -143,15 +193,7 @@ function Dashboard() {
 
     return (
         <div className={styles.dashboard}>
-            <Menu />
             <main className={styles.content}>
-                <header className={styles.header}>
-                    <div>
-                        <h1>Mi Perfil</h1>
-                        <p>Bienvenido de nuevo, {user?.displayName || user?.email}</p>
-                    </div>
-                </header>
-
                 <Tabs 
                     tabs={[
                         { label: '📊 Mi Perfil', content: tabPerfil },

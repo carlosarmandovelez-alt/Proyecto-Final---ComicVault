@@ -1,8 +1,7 @@
-// src/pages/Register/index.jsx
 import { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
-import styles from './index.module.scss'; // Usa los mismos estilos que Login
+import styles from './index.module.scss'; 
 
 function Register() {
     const [nombre, setNombre] = useState('');

@@ -1,13 +1,12 @@
-// src/componentes/index/TreeView.jsx
 import { useState } from 'react';
-import { Link } from 'react-router-dom'; // ✅ Importar Link
+import { Link } from 'react-router-dom'; 
 import styles from './TreeView.module.scss';
 
 function TreeNode({ nodo }) {
     const [abierto, setAbierto] = useState(false);
 
     const tieneHijos = nodo.hijos && nodo.hijos.length > 0;
-    const esComic = nodo.tipo === 'comic'; // ✅ Detectar si es cómic
+    const esComic = nodo.tipo === 'comic'; // Detectar si es cómic
 
     const getIcon = () => {
         if (nodo.tipo === 'raiz') return '📁';
@@ -21,7 +20,7 @@ function TreeNode({ nodo }) {
         return nodo.valor;
     };
 
-    // ✅ Si es cómic, renderizamos un Link
+    // si es cómic, renderizamos un Link
     if (esComic) {
         return (
             <li className={styles.treeNode}>
@@ -33,7 +32,7 @@ function TreeNode({ nodo }) {
         );
     }
 
-    // ✅ Si es carpeta/editorial/autor, renderizamos el acordeón
+    // si es carpeta/editorial/autor, renderizamos el acordeón
     return (
         <li className={styles.treeNode}>
             <div 

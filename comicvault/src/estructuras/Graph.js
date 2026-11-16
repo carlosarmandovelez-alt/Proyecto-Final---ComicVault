@@ -1,7 +1,6 @@
-// src/estructuras/Graph.js
 class Graph {
     constructor() {
-        // { idNodo: [{ id: idVecino, peso: 10, razon: 'Mismo Autor' }, ...] }
+        
         this.adjList = {}; 
         this.nodesData = {};
     }
@@ -13,7 +12,7 @@ class Graph {
         }
     }
 
-    // ✅ Agregar arista con PESO y RAZÓN
+    // Agregar arista con PESO y RAZÓN
     addEdge(node1, node2, peso = 1, razon = 'Relacionado') {
         if (this.adjList[node1] && this.adjList[node2]) {
             // Actualizar o agregar para node1
@@ -40,7 +39,7 @@ class Graph {
         }
     }
 
-    // ✅ Obtener vecinos ORDENADOS por peso (mayor a menor)
+    // Obtener vecinos ORDENADOS por peso (mayor a menor)
     getNeighborsSorted(id) {
         const vecinos = this.adjList[id] || [];
         // Retorna una copia ordenada para no mutar el original

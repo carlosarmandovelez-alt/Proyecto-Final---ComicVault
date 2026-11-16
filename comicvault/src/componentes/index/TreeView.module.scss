@@ -1,11 +1,11 @@
-// src/componentes/index/TreeView.module.scss
+@import '../../styles/variables';
+
 .treeContainer {
-    background: #1F1F1F;
-    border: 1px solid #333;
-    border-radius: 12px;
-    padding: 20px;
-    max-height: 400px;
-    overflow-y: auto;
+    background: transparent;
+    border: none;
+    padding: 0;
+    max-height: none;
+    overflow: visible;
 }
 
 .treeRoot {
@@ -24,23 +24,23 @@
     align-items: center;
     gap: 8px;
     padding: 8px 12px;
-    border-radius: 6px;
-    color: #AAAAAA;
+    border-radius: $radius-sm;
+    color: $text-secondary;
     transition: background 0.2s;
 
     &.clickable {
         cursor: pointer;
-        color: white;
+        color: $text-primary;
 
         &:hover {
-            background: #2C2C2C;
+            background: $bg-hover;
         }
     }
 }
 
 .arrow {
     font-size: 0.7rem;
-    color: #F5C518;
+    color: $primary;
     transition: transform 0.2s;
     width: 12px;
 
@@ -59,35 +59,31 @@
 
 .count {
     font-size: 0.8rem;
-    color: #777;
+    color: $text-muted;
     margin-left: auto;
 }
 
 .childrenList {
     list-style: none;
-    padding-left: 24px; // Indentación para los hijos
+    padding-left: 24px;
     margin: 0;
-    border-left: 1px solid #333;
+    border-left: 1px solid $border;
     margin-left: 16px;
 }
 
-// src/componentes/index/TreeView.module.scss
-// ... (estilos anteriores)
-
-// ✅ Estilo para los cómics (links)
 .comicNode {
     display: flex;
     align-items: center;
     gap: 8px;
     padding: 8px 12px;
-    border-radius: 6px;
-    color: #AAAAAA;
+    border-radius: $radius-sm;
+    color: $text-secondary;
     text-decoration: none;
     transition: all 0.2s;
-    margin-left: 20px; /* Indentación para que se vea como hijo */
+    margin-left: 20px;
 
     &:hover {
-        background: #2C2C2C;
-        color: #F5C518;
+        background: $bg-hover;
+        color: $primary;
     }
 }

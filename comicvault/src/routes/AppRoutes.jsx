@@ -1,28 +1,33 @@
-// src/routes/AppRoutes.jsx
 import { Routes, Route, Navigate } from 'react-router-dom';
+import Layout from '../componentes/shared/Layout';
 import Home from '../pages/Home';
-import Explore from '../pages/Explore'; // ✅ Nueva página
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Dashboard from '../pages/Dashboard';
 import ComicDetail from '../pages/ComicDetail';
+import Profile from '../pages/Profile'; 
 import UserRoutes from './UserRoutes';
 
 function AppRoutes() {
     return (
         <Routes>
-            {/* Públicas */}
-            <Route path="/" element={<Home />} />
-            <Route path="/explore" element={<Explore />} />
+            {/* Rutas Públicas sin Layout (Login y Register no tienen Sidebar) */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/comic/:id" element={<ComicDetail />} />
 
-            {/* Privadas */}
-            <Route path="/dashboard" element={<UserRoutes />}>
-                <Route index element={<Dashboard />} />
+            {/* Rutas con Layout (Sidebar) */}
+            <Route element={<Layout />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/comic/:id" element={<ComicDetail />} />
+
+                {/* Rutas Privadas (Requieren Login) */}
+                <Route element={<UserRoutes />}>
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/profile" element={<Profile />} />
+                </Route>
             </Route>
 
+            {/* Redirección */}
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
     );

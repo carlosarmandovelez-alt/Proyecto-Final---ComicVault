@@ -1,0 +1,114 @@
+@import '../../styles/variables';
+
+.container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: $bg-primary;
+}
+
+.card {
+    background: $bg-card;
+    padding: 40px;
+    border-radius: $radius-lg;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid $border;
+    box-shadow: $shadow-md;
+
+    h1 {
+        color: $primary;
+        text-align: center;
+        margin-bottom: 8px;
+        font-size: 2rem;
+    }
+}
+
+.subtitle {
+    color: $text-secondary;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 0.9rem;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    label {
+        color: $text-secondary;
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+
+    input {
+        padding: 14px;
+        background: $bg-input;
+        border: 1px solid $border;
+        border-radius: $radius-md;
+        color: $text-primary;
+        font-size: 1rem;
+
+        &::placeholder { color: $text-muted; }
+
+        &:focus {
+            outline: none;
+            border-color: $primary;
+        }
+    }
+}
+
+.btnPrimary {
+    padding: 14px;
+    background: $primary;
+    color: #0A0C10;
+    border: none;
+    border-radius: $radius-md;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.2s;
+
+    &:hover {
+        background: $primary-hover;
+        transform: translateY(-2px);
+    }
+}
+
+.error {
+    background: rgba(218, 54, 51, 0.1);
+    color: $danger;
+    padding: 12px;
+    border-radius: $radius-md;
+    border-left: 4px solid $danger;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.link {
+    color: $text-secondary;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+
+    a {
+        color: $primary;
+        text-decoration: none;
+        font-weight: 600;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}

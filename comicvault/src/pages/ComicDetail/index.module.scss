@@ -1,21 +1,8 @@
-// src/pages/ComicDetail/index.module.scss
+@import '../../styles/variables';
+
 .detailContainer {
     min-height: 100vh;
-    background: #121212;
-}
-
-.navbar {
-    background: #1F1F1F;
-    padding: 16px 40px;
-    border-bottom: 2px solid #F5C518;
-}
-
-.backBtn {
-    color: #F5C518;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 1rem;
-    &:hover { text-decoration: underline; }
+    background: $bg-primary;
 }
 
 .mainContent {
@@ -40,50 +27,106 @@
     width: 300px;
     height: 450px;
     object-fit: cover;
-    border-radius: 12px;
+    border-radius: $radius-lg;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    border: 1px solid $border;
 }
 
 .infoText {
     flex: 1;
     min-width: 300px;
 
-    h1 { color: white; font-size: 2.5rem; margin-bottom: 16px; }
+    h1 {
+        color: $text-primary;
+        font-size: 2.5rem;
+        margin-bottom: 16px;
+    }
 }
 
-.author { color: #F5C518; font-size: 1.2rem; margin-bottom: 8px; }
-.editorial { color: #AAAAAA; font-size: 1rem; margin-bottom: 20px; }
+.author {
+    color: $secondary;
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+}
+
+.editorial {
+    color: $text-secondary;
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
 
 .globalRating {
     display: flex;
     align-items: center;
     gap: 12px;
     margin-bottom: 24px;
-    background: #1F1F1F;
+    background: $bg-card;
     padding: 12px 20px;
-    border-radius: 8px;
-    border-left: 4px solid #F5C518;
+    border-radius: $radius-md;
+    border-left: 4px solid $primary;
     width: fit-content;
 
-    .stars { color: #F5C518; letter-spacing: 2px; }
-    .average { color: white; font-weight: bold; font-size: 1.2rem; }
-    .count { color: #777; font-size: 0.9rem; }
+    .stars { color: $primary; letter-spacing: 2px; }
+    .average { color: $text-primary; font-weight: bold; font-size: 1.2rem; }
+    .count { color: $text-secondary; font-size: 0.9rem; }
 }
 
 .sinopsis {
-    color: #CCCCCC;
+    color: $text-secondary;
     font-size: 1.1rem;
     line-height: 1.6;
 }
 
-// ✅ Sección de Interacción
-.interactionSection {
-    background: #1F1F1F;
-    padding: 30px;
-    border-radius: 12px;
-    border: 1px solid #333;
+.actionButtons {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+}
 
-    h2 { color: #F5C518; margin-bottom: 20px; font-size: 1.5rem; }
+.btnRead, .btnWishlist {
+    flex: 1;
+    padding: 14px;
+    border-radius: $radius-md;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    border: none;
+}
+
+.btnRead {
+    background: $success;
+    color: #0A0C10;
+
+    &:hover { background: lighten($success, 10%); transform: translateY(-2px); }
+}
+
+.btnWishlist {
+    background: $primary;
+    color: #0A0C10;
+
+    &:hover { background: $primary-hover; transform: translateY(-2px); }
+}
+
+.btnSuccess {
+    background: $success !important;
+    color: #0A0C10 !important;
+    cursor: default;
+    opacity: 0.8;
+}
+
+.interactionSection {
+    background: $bg-card;
+    padding: 30px;
+    border-radius: $radius-lg;
+    border: 1px solid $border;
+
+    h2 {
+        color: $primary;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+    }
 }
 
 .form {
@@ -93,47 +136,47 @@
 }
 
 .ratingInput, .reviewInput {
-    p { color: #AAAAAA; margin-bottom: 8px; font-weight: 500; }
+    p { color: $text-secondary; margin-bottom: 8px; font-weight: 500; }
 }
 
 .reviewInput textarea {
     width: 100%;
     padding: 12px;
-    background: #2C2C2C;
-    border: 1px solid #444;
-    border-radius: 8px;
-    color: white;
+    background: $bg-input;
+    border: 1px solid $border;
+    border-radius: $radius-md;
+    color: $text-primary;
     font-size: 1rem;
     font-family: inherit;
     resize: vertical;
 
     &:focus {
         outline: none;
-        border-color: #F5C518;
+        border-color: $primary;
     }
 }
 
 .btnSave {
     align-self: flex-start;
     padding: 12px 24px;
-    background: #F5C518;
-    color: #121212;
+    background: $primary;
+    color: #0A0C10;
     border: none;
-    border-radius: 8px;
+    border-radius: $radius-md;
     font-weight: bold;
     font-size: 1rem;
     cursor: pointer;
 
-    &:hover { background: #FFD84D; }
+    &:hover { background: $primary-hover; }
     &:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 
 .loginPrompt {
-    color: #AAAAAA;
+    color: $text-secondary;
     font-size: 1.1rem;
 
     a {
-        color: #F5C518;
+        color: $primary;
         font-weight: bold;
         text-decoration: none;
         &:hover { text-decoration: underline; }
@@ -141,22 +184,63 @@
 }
 
 .loading {
-    color: white;
+    color: $text-primary;
     text-align: center;
     padding: 40px;
 }
 
-// ✅ Estilos para Recomendaciones
+.communityReviews {
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 1px solid $border;
+
+    h2 {
+        color: $primary;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+}
+
+.reviewsList {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.reviewCard {
+    background: $bg-card;
+    padding: 20px;
+    border-radius: $radius-md;
+    border-left: 4px solid $text-secondary;
+}
+
+.reviewHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.reviewStars { color: $primary; font-size: 1rem; letter-spacing: 2px; }
+.reviewUser { color: $text-secondary; font-size: 0.85rem; font-style: italic; }
+.reviewText { color: $text-primary; font-size: 1rem; line-height: 1.5; font-style: italic; }
+
+.hint {
+    color: $text-muted;
+    font-size: 0.8rem;
+    margin-top: 10px;
+    font-style: italic;
+}
+
 .recommendationsSection {
     margin-top: 50px;
     padding-top: 30px;
-    border-top: 1px solid #333;
+    border-top: 1px solid $border;
 
-    h2 { color: #F5C518; font-size: 1.5rem; margin-bottom: 8px; }
+    h2 { color: $primary; font-size: 1.5rem; margin-bottom: 8px; }
 }
 
 .recSubtitle {
-    color: #777;
+    color: $text-muted;
     font-size: 0.9rem;
     margin-bottom: 24px;
 }
@@ -169,92 +253,17 @@
 
 .recCard {
     text-decoration: none;
-    background: #1F1F1F;
-    border-radius: 8px;
+    background: $bg-card;
+    border-radius: $radius-md;
     overflow: hidden;
-    border: 1px solid #333;
-    transition: all 0.2s;
-
-    &:hover {
-        transform: translateY(-5px);
-        border-color: #F5C518;
-    }
-
-    img {
-        width: 100%;
-        height: 250px;
-        object-fit: cover;
-    }
-
-    h4 {
-        color: white;
-        font-size: 0.95rem;
-        padding: 12px 12px 4px;
-    }
-
-    p {
-        color: #AAAAAA;
-        font-size: 0.8rem;
-        padding: 0 12px 12px;
-    }
-}
-
-// ✅ Botones de Acción (Pila y Cola)
-.actionButtons {
-    display: flex;
-    gap: 16px;
-    margin-top: 24px;
-}
-
-.btnRead, .btnWishlist {
-    flex: 1;
-    padding: 14px;
-    border-radius: 8px;
-    font-weight: bold;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-    border: none;
-}
-
-.btnRead {
-    background: #10B981;
-    color: #121212;
-
-    &:hover { background: #34D399; transform: translateY(-2px); }
-}
-
-.btnWishlist {
-    background: #F5C518;
-    color: #121212;
-
-    &:hover { background: #FFD84D; transform: translateY(-2px); }
-}
-
-// src/pages/ComicDetail/index.module.scss
-// ... (tus estilos anteriores)
-
-// ✅ Estilos para las recomendaciones
-.recGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 20px;
-}
-
-.recCard {
-    text-decoration: none;
-    background: #1F1F1F;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid #333;
+    border: 1px solid $border;
     transition: all 0.2s;
     display: flex;
     flex-direction: column;
 
     &:hover {
         transform: translateY(-5px);
-        border-color: #F5C518;
+        border-color: $secondary;
     }
 
     img {
@@ -264,7 +273,7 @@
     }
 
     h4 {
-        color: white;
+        color: $text-primary;
         font-size: 0.95rem;
         padding: 12px 12px 4px;
         margin: 0;
@@ -272,20 +281,19 @@
 }
 
 .recAuthor {
-    color: #AAAAAA;
+    color: $text-secondary;
     font-size: 0.8rem;
     padding: 0 12px 8px;
     margin: 0;
 }
 
-// ✅ Estilo para la razón del Grafo
 .recReason {
-    background: rgba(245, 197, 24, 0.1);
-    color: #F5C518;
+    background: rgba(47, 129, 247, 0.1);
+    color: $secondary;
     font-size: 0.75rem;
     padding: 6px 12px;
     text-align: center;
     font-weight: 500;
-    border-top: 1px solid #333;
-    margin-top: auto; /* Para que se pegue al fondo de la tarjeta */
+    border-top: 1px solid $border;
+    margin-top: auto;
 }

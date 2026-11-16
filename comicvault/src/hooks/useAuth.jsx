@@ -1,11 +1,10 @@
-// src/hooks/useAuth.jsx
 import { useState, useEffect } from 'react';
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signOut,
     onAuthStateChanged,
-    updateProfile
+    updateProfile 
 } from 'firebase/auth';
 import { auth } from '../firebase/config';
 
@@ -14,7 +13,7 @@ export function useAuth() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // ✅ Escuchar cambios de autenticación
+    // Escuchar cambios de autenticación
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
@@ -23,13 +22,16 @@ export function useAuth() {
         return () => unsubscribe();
     }, []);
 
-    // ✅ Registro
+    //Registro
     const register = async (email, password, displayName) => {
         setIsLoading(true);
         setError(null);
         try {
             const result = await createUserWithEmailAndPassword(auth, email, password);
+            
+            // Actualizar el perfil con el nombre
             await updateProfile(result.user, { displayName });
+            
             setUser({ ...result.user, displayName });
             setIsLoading(false);
             return result.user;
@@ -40,7 +42,7 @@ export function useAuth() {
         }
     };
 
-    // ✅ Login
+    //Login
     const login = async (email, password) => {
         setIsLoading(true);
         setError(null);
@@ -56,7 +58,7 @@ export function useAuth() {
         }
     };
 
-    // ✅ Logout
+    //Logout
     const logout = async () => {
         setIsLoading(true);
         try {
@@ -70,6 +72,24 @@ export function useAuth() {
         }
     };
 
+    // Actualizar Perfil (Nombre y Foto)
+    const updateUserProfile = async (displayName, photoURL) => {
+        if (!auth.currentUser) return;
+        try {
+            await updateProfile(auth.currentUser, { displayName, photoURL });
+            // Actualizar el estado local para que se refleje en la UI
+            setUser({ 
+                ...auth.currentUser, 
+                displayName: displayName || auth.currentUser.displayName, 
+                photoURL: photoURL || auth.currentUser.photoURL 
+            });
+            return true;
+        } catch (err) {
+            setError(err.message);
+            return false;
+        }
+    };
+
     return {
         user,
         isLoading,
@@ -77,6 +97,7 @@ export function useAuth() {
         isLogged: !!user,
         register,
         login,
-        logout
+        logout,
+        updateUserProfile 
     };
 }

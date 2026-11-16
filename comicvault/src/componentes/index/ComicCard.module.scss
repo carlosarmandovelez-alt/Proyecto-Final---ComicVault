@@ -1,27 +1,26 @@
-// src/componentes/index/ComicCard.module.scss
+@import '../../styles/variables';
 
 .card {
-    background: #1F1F1F;
-    border: 1px solid #333;
-    border-radius: 8px;
-    display: flex; /* ✅ Flexbox para poner imagen e info lado a lado */
+    background: $bg-card;
+    border: 1px solid $border;
+    border-radius: $radius-md;
+    display: flex;
     overflow: hidden;
-    height: 250px; /* Altura fija para que todas se vean iguales */
+    height: 250px;
     transition: all 0.2s;
 
     &:hover {
-        background: #252525;
-        border-color: #F5C518;
+        background: $bg-hover;
+        border-color: $secondary;
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        box-shadow: $shadow-md;
     }
 }
 
-/* ✅ Mitad izquierda: Imagen */
 .imageContainer {
-    width: 45%; /* Ocupa el 45% de la tarjeta */
+    width: 45%;
     height: 100%;
-    background: #2C2C2C;
+    background: $bg-input;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -30,22 +29,21 @@
     .coverImage {
         width: 100%;
         height: 100%;
-        object-fit: cover; /* Ajusta la imagen sin deformarla */
+        object-fit: cover;
     }
 
     .noImage {
-        color: #777;
+        color: $text-muted;
         font-size: 0.9rem;
     }
 }
 
-/* ✅ Mitad derecha: Información */
 .infoContainer {
-    width: 55%; /* Ocupa el 55% restante */
+    width: 55%;
     padding: 16px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Distribuye el contenido */
+    justify-content: space-between;
 }
 
 .header {
@@ -55,11 +53,10 @@
     margin-bottom: 8px;
 
     h3 {
-        color: #F5C518;
+        color: $primary;
         font-size: 1.1rem;
         font-weight: 600;
         line-height: 1.2;
-        /* Limitar a 2 líneas si el título es muy largo */
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -70,27 +67,25 @@
 .btnDelete {
     background: transparent;
     border: none;
-    color: #EF4444;
+    color: $danger;
     font-size: 1.2rem;
     cursor: pointer;
     padding: 0 4px;
     transition: transform 0.2s;
 
-    &:hover {
-        transform: scale(1.2);
-    }
+    &:hover { transform: scale(1.2); }
 }
 
 .details {
     font-size: 0.85rem;
-    color: #AAAAAA;
+    color: $text-secondary;
     margin-bottom: 10px;
 
     p {
         margin-bottom: 4px;
         white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis; /* Pone "..." si el texto es muy largo */
+        text-overflow: ellipsis;
     }
 }
 
@@ -99,40 +94,6 @@
     margin-bottom: 10px;
 }
 
-.review {
-    color: #CCCCCC;
-    font-style: italic;
-    font-size: 0.8rem;
-    padding: 8px;
-    background: #2C2C2C;
-    border-radius: 6px;
-    border-left: 2px solid #F5C518;
-    display: -webkit-box;
-    -webkit-line-clamp: 2; /* Máximo 2 líneas de reseña */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-// ✅ ESTILO PARA EL BOTÓN DE LEÍDO
-.btnRead {
-    width: 100%;
-    padding: 10px;
-    background: transparent;
-    border: 1px solid #10B981;
-    color: #10B981;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: all 0.2s;
-
-    &:hover {
-        background: #10B981;
-        color: #121212;
-    }
-}
-
-// ✅ Reemplaza el .btnRead anterior por esto
 .actions {
     display: flex;
     gap: 10px;
@@ -142,7 +103,7 @@
 .btnRead, .btnWishlist {
     flex: 1;
     padding: 8px;
-    border-radius: 6px;
+    border-radius: $radius-sm;
     font-weight: 600;
     cursor: pointer;
     font-size: 0.85rem;
@@ -152,16 +113,46 @@
 
 .btnRead {
     background: transparent;
-    border: 1px solid #10B981;
-    color: #10B981;
+    border: 1px solid $success;
+    color: $success;
 
-    &:hover { background: #10B981; color: #121212; }
+    &:hover { background: $success; color: #0A0C10; }
 }
 
 .btnWishlist {
     background: transparent;
-    border: 1px solid #F5C518;
-    color: #F5C518;
+    border: 1px solid $primary;
+    color: $primary;
 
-    &:hover { background: #F5C518; color: #121212; }
+    &:hover { background: $primary; color: #0A0C10; }
+}
+
+
+.readOnlyInfo {
+    margin-top: 10px;
+    min-height: 40px; 
+    display: flex;
+    align-items: center;
+}
+
+.shortReview {
+    color: #9CA3AF; 
+    font-size: 0.85rem;
+    font-style: italic;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; 
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+}
+
+.readBadge {
+    display: inline-block;
+    background: rgba(5, 150, 105, 0.1); 
+    color: #059669; 
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
 }

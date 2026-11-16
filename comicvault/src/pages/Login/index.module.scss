@@ -1,23 +1,25 @@
-// src/pages/Login/index.module.scss
+@import '../../styles/variables';
+
 .container {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
-    background: linear-gradient(135deg, #121212 0%, #1F1F1F 100%);
+    background: $bg-primary;
 }
 
 .card {
-    background: #1F1F1F;
+    background: $bg-card;
     padding: 40px;
-    border-radius: 12px;
+    border-radius: $radius-lg;
     width: 100%;
     max-width: 400px;
-    border: 1px solid #333;
+    border: 1px solid $border;
+    box-shadow: $shadow-md;
 
     h1 {
-        color: #F5C518;
+        color: $primary;
         text-align: center;
         margin-bottom: 8px;
         font-size: 2rem;
@@ -25,7 +27,7 @@
 }
 
 .subtitle {
-    color: #AAAAAA;
+    color: $text-secondary;
     text-align: center;
     margin-bottom: 30px;
     font-size: 0.9rem;
@@ -43,7 +45,7 @@
     gap: 5px;
 
     label {
-        color: #AAAAAA;
+        color: $text-secondary;
         font-size: 0.85rem;
         font-weight: 500;
         text-transform: uppercase;
@@ -51,29 +53,27 @@
 
     input {
         padding: 14px;
-        background: #2C2C2C;
-        border: 1px solid #444;
-        border-radius: 8px;
-        color: white;
+        background: $bg-input;
+        border: 1px solid $border;
+        border-radius: $radius-md;
+        color: $text-primary;
         font-size: 1rem;
 
-        &::placeholder {
-            color: #777;
-        }
+        &::placeholder { color: $text-muted; }
 
         &:focus {
             outline: none;
-            border-color: #F5C518;
+            border-color: $primary;
         }
     }
 }
 
 .btnPrimary {
     padding: 14px;
-    background: #F5C518;
-    color: #121212;
+    background: $primary;
+    color: #0A0C10;
     border: none;
-    border-radius: 8px;
+    border-radius: $radius-md;
     font-weight: 700;
     font-size: 1rem;
     cursor: pointer;
@@ -81,29 +81,29 @@
     transition: all 0.2s;
 
     &:hover {
-        background: #FFD84D;
+        background: $primary-hover;
         transform: translateY(-2px);
     }
 }
 
 .error {
-    background: rgba(239, 68, 68, 0.1);
-    color: #EF4444;
+    background: rgba(218, 54, 51, 0.1);
+    color: $danger;
     padding: 12px;
-    border-radius: 8px;
-    border-left: 4px solid #EF4444;
+    border-radius: $radius-md;
+    border-left: 4px solid $danger;
     font-size: 0.9rem;
     text-align: center;
 }
 
 .link {
-    color: #AAAAAA;
+    color: $text-secondary;
     text-align: center;
     margin-top: 20px;
     font-size: 0.9rem;
 
     a {
-        color: #F5C518;
+        color: $primary;
         text-decoration: none;
         font-weight: 600;
 

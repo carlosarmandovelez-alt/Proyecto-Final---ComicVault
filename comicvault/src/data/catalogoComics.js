@@ -1,4 +1,3 @@
-// src/data/catalogoComics.js
 export const catalogoComics = [
 
     {
@@ -335,5 +334,24 @@ export const catalogoComics = [
         anio: 2001,
         sinopsis: "Los X-Men se enfrentan a amenazas en la oscuridad de la noche.",
         imagenUrl: "/comics/xmen-midnight.jpg"
+    },
+
+    {
+        id: "c38",
+        titulo: "Daredevil: The Man Without Fear",
+        autor: "Frank Miller",
+        editorial: "Marvel Comics",
+        anio: 1993,
+        sinopsis: "La redefinición del origen de Daredevil. Matt Murdock, cegado por un accidente, usa sus sentidos mejorados para luchar contra el crimen en Hell's Kitchen.",
+        imagenUrl: "/comics/daredevil-man-without-fear.jpg"
+    },
+    {
+        id: "c39",
+        titulo: "Wolverine",
+        autor: "Frank Miller",
+        editorial: "Marvel Comics",
+        anio: 1982,
+        sinopsis: "La miniserie que definió al mutante más famoso de Marvel. Wolverine viaja a Japón para enfrentarse a sus demonios y a un misterioso enemigo del pasado.",
+        imagenUrl: "/comics/wolverine-frank-miller.jpg"
     }
 ];

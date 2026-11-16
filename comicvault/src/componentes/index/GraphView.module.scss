@@ -1,4 +1,5 @@
-// src/componentes/index/GraphView.module.scss
+@import '../../styles/variables';
+
 .graphContainer {
     display: flex;
     flex-direction: column;
@@ -9,27 +10,27 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    background: #2C2C2C;
+    background: $bg-input;
     padding: 12px 16px;
-    border-radius: 8px;
+    border-radius: $radius-sm;
 
-    label { color: #AAAAAA; font-size: 0.9rem; }
+    label { color: $text-secondary; font-size: 0.9rem; }
     select {
-        background: #1F1F1F;
-        color: white;
-        border: 1px solid #444;
+        background: $bg-card;
+        color: $text-primary;
+        border: 1px solid $border;
         padding: 8px 12px;
-        border-radius: 6px;
+        border-radius: $radius-sm;
         flex: 1;
         font-size: 1rem;
-        &:focus { outline: none; border-color: #F5C518; }
+        &:focus { outline: none; border-color: $primary; }
     }
 }
 
 .visualGraph {
-    background: #1A1A1A;
-    border: 1px dashed #444;
-    border-radius: 12px;
+    background: $bg-primary;
+    border: 1px dashed $border;
+    border-radius: $radius-md;
     padding: 30px;
     display: flex;
     flex-direction: column;
@@ -38,8 +39,8 @@
 }
 
 .centerNode {
-    background: #F5C518;
-    color: #121212;
+    background: $primary;
+    color: #0A0C10;
     padding: 16px 24px;
     border-radius: 50px;
     font-weight: bold;
@@ -56,7 +57,7 @@
     width: 100%;
     text-align: center;
     
-    h4 { color: #AAAAAA; margin-bottom: 16px; font-weight: 500; }
+    h4 { color: $text-secondary; margin-bottom: 16px; font-weight: 500; }
 }
 
 .connectionCards {
@@ -67,14 +68,13 @@
 }
 
 .connectionCard {
-    background: #2C2C2C;
-    border: 1px solid #F5C518;
+    background: $bg-card;
+    border: 1px solid $secondary;
     padding: 12px 16px;
-    border-radius: 8px;
+    border-radius: $radius-sm;
     min-width: 200px;
     position: relative;
 
-    /* Línea conectora visual */
     &::before {
         content: '';
         position: absolute;
@@ -82,11 +82,11 @@
         left: 50%;
         width: 2px;
         height: 15px;
-        background: #444;
+        background: $border;
     }
 }
 
-.connTitle { color: white; font-weight: bold; margin-bottom: 4px; }
-.connDetail { color: #F5C518; font-size: 0.8rem; }
-.noConnections { color: #777; font-style: italic; }
-.empty { color: #777; text-align: center; padding: 20px; }
+.connTitle { color: $text-primary; font-weight: bold; margin-bottom: 4px; }
+.connDetail { color: $secondary; font-size: 0.8rem; }
+.noConnections { color: $text-muted; font-style: italic; }
+.empty { color: $text-muted; text-align: center; padding: 20px; }

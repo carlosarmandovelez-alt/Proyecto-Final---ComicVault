@@ -1,10 +1,8 @@
-// src/pages/ComicDetail/index.jsx
 import { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { ComicContext } from '../../context/ComicContext';
 import StarRating from '../../componentes/index/StarRating';
-import Menu from '../../componentes/shared/Menu';
 import styles from './index.module.scss';
 
 function ComicDetail() {
@@ -26,9 +24,30 @@ function ComicDetail() {
     const [promedioGlobal, setPromedioGlobal] = useState(0);
     const [totalCalificaciones, setTotalCalificaciones] = useState(0);
     const [isSaving, setIsSaving] = useState(false);
-    
-    // ✅ Estado para recomendaciones (Ahora incluye la razón)
     const [recomendaciones, setRecomendaciones] = useState([]);
+    const [todasLasResenas, setTodasLasResenas] = useState([]);
+    
+    //Estados para feedback visual
+    const [isAddedToWishlist, setIsAddedToWishlist] = useState(false);
+    const [isMarkedAsRead, setIsMarkedAsRead] = useState(false);
+
+    //Función para cargar estadísticas y reseñas
+    const cargarEstadisticasYResenas = async () => {
+        const todas = await getAllInteractions();
+        const delComic = todas.filter(t => t.comicId === id && t.calificacion > 0);
+        
+        if (delComic.length > 0) {
+            const suma = delComic.reduce((acc, curr) => acc + curr.calificacion, 0);
+            setPromedioGlobal(suma / delComic.length);
+            setTotalCalificaciones(delComic.length);
+        } else {
+            setPromedioGlobal(0);
+            setTotalCalificaciones(0);
+        }
+
+        const resenasComunidad = delComic.filter(t => t.resena && t.resena.trim() !== '');
+        setTodasLasResenas(resenasComunidad);
+    };
 
     useEffect(() => {
         const comicEncontrado = catalogoComics.find(c => c.id === id);
@@ -39,36 +58,23 @@ function ComicDetail() {
             if (interaccion) {
                 setCalificacion(interaccion.calificacion || 0);
                 setResena(interaccion.resena || '');
+                if (interaccion.leido) setIsMarkedAsRead(true);
             }
         }
 
-        const calcularPromedio = async () => {
-            const todas = await getAllInteractions();
-            const delComic = todas.filter(t => t.comicId === id && t.calificacion > 0);
-            if (delComic.length > 0) {
-                const suma = delComic.reduce((acc, curr) => acc + curr.calificacion, 0);
-                setPromedioGlobal(suma / delComic.length);
-                setTotalCalificaciones(delComic.length);
-            }
-        };
-        calcularPromedio();
+        cargarEstadisticasYResenas();
 
-        // ✅ Calcular recomendaciones usando el Grafo Ponderado
         if (grafo) {
             const vecinosOrdenados = grafo.getNeighborsSorted(id);
-            
-            // Obtenemos el objeto completo del cómic y la razón de la conexión
             const comicsRecomendados = vecinosOrdenados
                 .map(vecino => {
                     const comicData = catalogoComics.find(c => c.id === vecino.id);
                     return comicData ? { ...comicData, razon: vecino.razon } : null;
                 })
                 .filter(c => c !== null)
-                .slice(0, 4); // Tomar los 4 mejores
-                
+                .slice(0, 4);
             setRecomendaciones(comicsRecomendados);
         }
-
     }, [id, user, userComics, catalogoComics, grafo]);
 
     const handleSave = async () => {
@@ -77,29 +83,45 @@ function ComicDetail() {
             return;
         }
         setIsSaving(true);
-        await saveInteraction(user.uid, id, { calificacion, resena });
+        
+        await saveInteraction(user.uid, id, { 
+            calificacion, 
+            resena,
+            userName: user.displayName || user.email 
+        });
+        
+        //Si califica o reseña, automáticamente se marca como leído
+        if (calificacion > 0 || resena.trim() !== '') {
+            await marcarComoLeido(comic);
+            setIsMarkedAsRead(true);
+        }
+
+        await cargarEstadisticasYResenas();
+
         setIsSaving(false);
         alert('¡Guardado con éxito!');
     };
 
-    const handleLeido = () => {
+    const handleLeido = async () => {
         if (!user) return alert('Inicia sesión primero');
-        marcarComoLeido(comic);
-        alert('Añadido al historial (Pila)');
+        await marcarComoLeido(comic);
+        setIsMarkedAsRead(true);
+        setTimeout(() => setIsMarkedAsRead(false), 3000);
     };
 
-    const handleDeseos = () => {
+    const handleDeseos = async () => {
         if (!user) return alert('Inicia sesión primero');
-        agregarADeseos(comic);
-        alert('Añadido a la lista de deseos (Cola)');
+        const exito = await agregarADeseos(comic);
+        if (exito) {
+            setIsAddedToWishlist(true);
+            setTimeout(() => setIsAddedToWishlist(false), 3000);
+        }
     };
 
     if (!comic) return <p className={styles.loading}>Cargando cómic...</p>;
 
     return (
         <div className={styles.detailContainer}>
-            <Menu />
-
             <main className={styles.mainContent}>
                 <div className={styles.comicInfo}>
                     <img src={comic.imagenUrl} alt={comic.titulo} className={styles.cover} />
@@ -117,11 +139,19 @@ function ComicDetail() {
                         <p className={styles.sinopsis}>{comic.sinopsis}</p>
 
                         <div className={styles.actionButtons}>
-                            <button onClick={handleLeido} className={styles.btnRead}>
-                                📖 Marcar como Leído
+                            <button 
+                                onClick={handleLeido} 
+                                className={`${styles.btnRead} ${isMarkedAsRead ? styles.btnSuccess : ''}`}
+                                disabled={isMarkedAsRead}
+                            >
+                                {isMarkedAsRead ? '✅ Leído' : '📖 Marcar como Leído'}
                             </button>
-                            <button onClick={handleDeseos} className={styles.btnWishlist}>
-                                ⭐ Añadir a Deseos
+                            <button 
+                                onClick={handleDeseos} 
+                                className={`${styles.btnWishlist} ${isAddedToWishlist ? styles.btnSuccess : ''}`}
+                                disabled={isAddedToWishlist}
+                            >
+                                {isAddedToWishlist ? '✅ Añadido' : '⭐ Añadir a Deseos'}
                             </button>
                         </div>
                     </div>
@@ -147,6 +177,7 @@ function ComicDetail() {
                             <button onClick={handleSave} disabled={isSaving} className={styles.btnSave}>
                                 {isSaving ? 'Guardando...' : 'Guardar Reseña'}
                             </button>
+                            <p className={styles.hint}>Al guardar, se añadirá automáticamente a tu historial de leídos.</p>
                         </div>
                     ) : (
                         <p className={styles.loginPrompt}>
@@ -155,7 +186,27 @@ function ComicDetail() {
                     )}
                 </div>
 
-                {/* ✅ SECCIÓN DE RECOMENDACIONES CON RAZÓN */}
+                {todasLasResenas.length > 0 && (
+                    <div className={styles.communityReviews}>
+                        <h2>💬 Reseñas de la Comunidad</h2>
+                        <div className={styles.reviewsList}>
+                            {todasLasResenas.map((review, index) => (
+                                <div key={index} className={styles.reviewCard}>
+                                    <div className={styles.reviewHeader}>
+                                        <span className={styles.reviewStars}>
+                                            {'⭐'.repeat(review.calificacion)}
+                                        </span>
+                                        <span className={styles.reviewUser}>
+                                            {review.userId === user?.uid ? 'Tú' : (review.userName || 'Usuario')}
+                                        </span>
+                                    </div>
+                                    <p className={styles.reviewText}>"{review.resena}"</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
                 {recomendaciones.length > 0 && (
                     <div className={styles.recommendationsSection}>
                         <h2>🕸️ Cómics Relacionados</h2>
@@ -167,8 +218,6 @@ function ComicDetail() {
                                     <img src={rec.imagenUrl} alt={rec.titulo} />
                                     <h4>{rec.titulo}</h4>
                                     <p className={styles.recAuthor}>{rec.autor}</p>
-                                    
-                                    {/* ✅ Mostrar la razón de la recomendación */}
                                     <span className={styles.recReason}>
                                         🔗 {rec.razon}
                                     </span>
@@ -177,7 +226,6 @@ function ComicDetail() {
                         </div>
                     </div>
                 )}
-
             </main>
         </div>
     );

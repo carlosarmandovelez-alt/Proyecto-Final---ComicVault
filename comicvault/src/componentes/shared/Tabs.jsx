@@ -1,4 +1,3 @@
-// src/componentes/shared/Tabs.jsx
 import { useState } from 'react';
 import styles from './Tabs.module.scss';
 

@@ -1,4 +1,3 @@
-// src/componentes/index/GraphView.jsx
 import { useState } from 'react';
 import styles from './GraphView.module.scss';
 
